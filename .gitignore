@@ -154,8 +154,10 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
-# Ignore CSV
+# Ignore CSV, tsv, xlxs
 *.csv
+*.tsv
+*.xlsx
 
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
