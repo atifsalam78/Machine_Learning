@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ML Algorithms Cheat Sheet</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --info: #3498db;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 1.2rem;
+        }
+        
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+        
+        .tab-btn {
+            padding: 12px 20px;
+            background: #f1f3f5;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .tab-btn:hover {
+            background: #e1e5e9;
+        }
+        
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .category-container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            padding: 25px;
+            margin-bottom: 30px;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .category-container.active {
+            display: block;
+        }
+        
+        h2 {
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-top: 0;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            font-size: 1.5rem;
+        }
+        
+        h2 i {
+            margin-right: 10px;
+            font-size: 1.3rem;
+        }
+        
+        .algorithm-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+        
+        .algorithm-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease;
+            border-left: 4px solid var(--secondary);
+        }
+        
+        .algorithm-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .algorithm-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            gap: 15px;
+        }
+        
+        .algorithm-icon {
+            font-size: 2rem;
+            color: var(--secondary);
+        }
+        
+        .algorithm-name {
+            font-size: 1.4rem;
+            color: var(--primary);
+        }
+        
+        .algorithm-desc {
+            color: #555;
+            margin-bottom: 15px;
+        }
+        
+        .algorithm-details {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        
+        .detail-item {
+            margin-bottom: 10px;
+            display: flex;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            min-width: 120px;
+            color: #333;
+        }
+        
+        .detail-value {
+            color: #555;
+            flex: 1;
+        }
+        
+        .pros-cons {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .pros, .cons {
+            flex: 1;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        
+        .pros {
+            background: #e8f5e9;
+            border-left: 4px solid var(--success);
+        }
+        
+        .cons {
+            background: #ffebee;
+            border-left: 4px solid var(--accent);
+        }
+        
+        .pros h4, .cons h4 {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .pros ul, .cons ul {
+            padding-left: 20px;
+        }
+        
+        .pros li, .cons li {
+            margin-bottom: 5px;
+        }
+        
+        .code-example {
+            background: #2d2d2d;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            color: #777;
+            font-size: 0.9em;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @media (max-width: 768px) {
+            .algorithm-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .pros-cons {
+                flex-direction: column;
+            }
+            
+            .tabs {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .tab-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1><i class="fas fa-brain"></i> Machine Learning Algorithms Cheat Sheet</h1>
+        <p class="subtitle">A comprehensive guide to the most important ML algorithms</p>
+        
+        <div class="tabs">
+            <button class="tab-btn active" data-category="supervised">
+                <i class="fas fa-chart-line"></i> Supervised Learning
+            </button>
+            <button class="tab-btn" data-category="unsupervised">
+                <i class="fas fa-project-diagram"></i> Unsupervised Learning
+            </button>
+            <button class="tab-btn" data-category="ensemble">
+                <i class="fas fa-users"></i> Ensemble Methods
+            </button>
+            <button class="tab-btn" data-category="nlp">
+                <i class="fas fa-language"></i> NLP
+            </button>
+            <button class="tab-btn" data-category="dl">
+                <i class="fas fa-network-wired"></i> Deep Learning
+            </button>
+        </div>
+    </header>
+
+    <!-- Supervised Learning -->
+    <div class="category-container active" id="supervised">
+        <h2><i class="fas fa-chart-line"></i> Supervised Learning</h2>
+        <p class="subtitle">Algorithms that learn from labeled training data</p>
+        
+        <div class="algorithm-grid">
+            <!-- Linear Regression -->
+            <div class="algorithm-card">
+                <div class="algorithm-header">
+                    <i class="algorithm-icon fas fa-chart-line"></i>
+                    <h3 class="algorithm-name">Linear Regression</h3>
+                </div>
+                <p class="algorithm-desc">Models the relationship between a dependent variable and one or more independent variables using a linear approach.</p>
+                
+                <div class="algorithm-details">
+                    <div class="detail-item">
+                        <span class="detail-label">Type:</span>
+                        <span class="detail-value">Regression</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Key Concepts:</span>
+                        <span class="detail-value">Line of best fit, least squares, R² score</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Use Cases:</span>
+                        <span class="detail-value">Housing price prediction, stock market analysis</span>
+                    </div>
+                </div>
+                
+                <div class="pros-cons">
+                    <div class="pros">
+                        <h4><i class="fas fa-plus-circle"></i> Pros</h4>
+                        <ul>
+                            <li>Simple to implement and interpret</li>
+                            <li>Computationally efficient</li>
+                            <li>Performs well with linear relationships</li>
+                        </ul>
+                    </div>
+                    <div class="cons">
+                        <h4><i class="fas fa-minus-circle"></i> Cons</h4>
+                        <ul>
+                            <li>Assumes linear relationship between variables</li>
+                            <li>Sensitive to outliers</li>
+                            <li>Prone to underfitting</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="code-example">
+# Python code example<br>
+from sklearn.linear_model import LinearRegression<br>
+model = LinearRegression()<br>
+model.fit(X_train, y_train)<br>
+predictions = model.predict(X_test)
+                </div>
+            </div>
+            
+            <!-- Logistic Regression -->
+            <div class="algorithm-card">
+                <div class="algorithm-header">
+                    <i class="algorithm-icon fas fa-project-diagram"></i>
+                    <h3 class="algorithm-name">Logistic Regression</h3>
+                </div>
+                <p class="algorithm-desc">Predicts the probability of a binary outcome based on one or more independent variables.</p>
+                
+                <div class="algorithm-details">
+                    <div class="detail-item">
+                        <span class="detail-label">Type:</span>
+                        <span class="detail-value">Classification</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Key Concepts:</span>
+                        <span class="detail-value">Sigmoid function, decision boundary, odds ratio</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Use Cases:</span>
+                        <span class="detail-value">Spam detection, disease diagnosis</span>
+                    </div>
+                </div>
+                
+                <div class="pros-cons">
+                    <div class="pros">
+                        <h4><i class="fas fa-plus-circle"></i> Pros</h4>
+                        <ul>
+                            <li>Outputs probabilities</li>
+                            <li>Less prone to overfitting</li>
+                            <li>Efficient for binary classification</li>
+                        </ul>
+                    </div>
+                    <div class="cons">
+                        <h4><i class="fas fa-minus-circle"></i> Cons</h4>
+                        <ul>
+                            <li>Assumes linear decision boundary</li>
+                            <li>Struggles with nonlinear problems</li>
+                            <li>Requires feature scaling</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="code-example">
+# Python code example<br>
+from sklearn.linear_model import LogisticRegression<br>
+model = LogisticRegression()<br>
+model.fit(X_train, y_train)<br>
+predictions = model.predict(X_test)
+                </div>
+            </div>
+            
+            <!-- SVM -->
+            <div class="algorithm-card">
+                <div class="algorithm-header">
+                    <i class="algorithm-icon fas fa-expand-arrows-alt"></i>
+                    <h3 class="algorithm-name">Support Vector Machines (SVM)</h3>
+                </div>
+                <p class="algorithm-desc">Finds the optimal hyperplane that separates classes with the maximum margin.</p>
+                
+                <div class="algorithm-details">
+                    <div class="detail-item">
+                        <span class="detail-label">Type:</span>
+                        <span class="detail-value">Classification, Regression</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Key Concepts:</span>
+                        <span class="detail-value">Kernel trick, support vectors, margin</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Use Cases:</span>
+                        <span class="detail-value">Image classification, text categorization</span>
+                    </div>
+                </div>
+                
+                <div class="pros-cons">
+                    <div class="pros">
+                        <h4><i class="fas fa-plus-circle"></i> Pros</h4>
+                        <ul>
+                            <li>Effective in high-dimensional spaces</li>
+                            <li>Memory efficient (uses subset of training points)</li>
+                            <li>Versatile with different kernel functions</li>
+                        </ul>
+                    </div>
+                    <div class="cons">
+                        <h4><i class="fas fa-minus-circle"></i> Cons</h4>
+                        <ul>
+                            <li>Doesn't perform well with large datasets</li>
+                            <li>Sensitive to noise</li>
+                            <li>Requires careful parameter tuning</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="code-example">
+# Python code example<br>
+from sklearn import svm<br>
+model = svm.SVC(kernel='linear')<br>
+model.fit(X_train, y_train)<br>
+predictions = model.predict(X_test)
+                </div>
+            </div>
+            
+            <!-- Decision Trees -->
+            <div class="algorithm-card">
+                <div class="algorithm-header">
+                    <i class="algorithm-icon fas fa-sitemap"></i>
+                    <h3 class="algorithm-name">Decision Trees</h3>
+                </div>
+                <p class="algorithm-desc">A tree-like model that makes decisions based on feature values at each node.</p>
+                
+                <div class="algorithm-details">
+                    <div class="detail-item">
+                        <span class="detail-label">Type:</span>
+                        <span class="detail-value">Classification, Regression</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Key Concepts:</span>
+                        <span class="detail-value">Nodes, leaves, entropy, information gain</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Use Cases:</span>
+                        <span class="detail-value">Customer segmentation, medical diagnosis</span>
+                    </div>
+                </div>
+                
+                <div class="pros-cons">
+                    <div class="pros">
+                        <h4><i class="fas fa-plus-circle"></i> Pros</h4>
+                        <ul>
+                            <li>Easy to interpret and visualize</li>
+                            <li>Handles both numerical and categorical data</li>
+                            <li>Requires little data preprocessing</li>
+                        </ul>
+                    </div>
+                    <div class="cons">
+                        <h4><i class="fas fa-minus-circle"></i> Cons</h4>
+                        <ul>
+                            <li>Prone to overfitting</li>
+                            <li>Unstable (small changes can lead to different trees)</li>
+                            <li>Biased toward features with more levels</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="code-example">
+# Python code example<br>
+from sklearn.tree import DecisionTreeClassifier<br>
+model = DecisionTreeClassifier()<br>
+model.fit(X_train, y_train)<br>
+predictions = model.predict(X_test)
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Unsupervised Learning -->
+    <div class="category-container" id="unsupervised">
+        <h2><i class="fas fa-project-diagram"></i> Unsupervised Learning</h2>
+        <p class="subtitle">Algorithms that find patterns in unlabeled data</p>
+        
+        <div class="algorithm-grid">
+            <!-- K-Means -->
+            <div class="algorithm-card">
+                <div class="algorithm-header">
+                    <i class="algorithm-icon fas fa-object-group"></i>
+                    <h3 class="algorithm-name">K-Means Clustering</h3>
+                </div>
+                <p class="algorithm-desc">Partitions data into K distinct clusters based on distance to the centroid of clusters.</p>
+                
+                <div class="algorithm-details">
+                    <div class="detail-item">
+                        <span class="detail-label">Type:</span>
+                        <span class="detail-value">Clustering</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Key Concepts:</span>
+                        <span class="detail-value">Centroids, inertia, elbow method</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Use Cases:</span>
+                        <span class="detail-value">Customer segmentation, image compression</span>
+                    </div>
+                </div>
+                
+                <div class="pros-cons">
+                    <div class="pros">
+                        <h4><i class="fas fa-plus-circle"></i> Pros</h4>
+                        <ul>
+                            <li>Simple to implement and interpret</li>
+                            <li>Efficient for large datasets</li>
+                            <li>Guarantees convergence</li>
+                        </ul>
+                    </div>
+                    <div class="cons">
+                        <h4><i class="fas fa-minus-circle"></i> Cons</h4>
+                        <ul>
+                            <li>Requires specifying number of clusters</li>
+                            <li>Sensitive to initial centroids</li>
+                            <li>Assumes spherical clusters</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="code-example">
+# Python code example<br>
+from sklearn.cluster import KMeans<br>
+kmeans = KMeans(n_clusters=3)<br>
+kmeans.fit(X)<br>
+labels = kmeans.predict(X)
+                </div>
+            </div>
+            
+            <!-- PCA -->
+            <div class="algorithm-card">
+                <div class="algorithm-header">
+                    <i class="algorithm-icon fas fa-compress-arrows-alt"></i>
+                    <h3 class="algorithm-name">Principal Component Analysis (PCA)</h3>
+                </div>
+                <p class="algorithm-desc">A dimensionality reduction technique that transforms data to a new coordinate system.</p>
+                
+                <div class="algorithm-details">
+                    <div class="detail-item">
+                        <span class="detail-label">Type:</span>
+                        <span class="detail-value">Dimensionality Reduction</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Key Concepts:</span>
+                        <span class="detail-value">Eigenvectors, eigenvalues, variance</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Use Cases:</span>
+                        <span class="detail-value">Data visualization, noise reduction</span>
+                    </div>
+                </div>
+                
+                <div class="pros-cons">
+                    <div class="pros">
+                        <h4><i class="fas fa-plus-circle"></i> Pros</h4>
+                        <ul>
+                            <li>Reduces dimensionality</li>
+                            <li>Removes correlated features</li>
+                            <li>Improves algorithm performance</li>
+                        </ul>
+                    </div>
+                    <div class="cons">
+                        <h4><i class="fas fa-minus-circle"></i> Cons</h4>
+                        <ul>
+                            <li>Results can be hard to interpret</li>
+                            <li>Assumes linear relationships</li>
+                            <li>Sensitive to scaling</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="code-example">
+# Python code example<br>
+from sklearn.decomposition import PCA<br>
+pca = PCA(n_components=2)<br>
+X_pca = pca.fit_transform(X)
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ensemble Methods -->
+    <div class="category-container" id="ensemble">
+        <h2><i class="fas fa-users"></i> Ensemble Methods</h2>
+        <p class="subtitle">Algorithms that combine multiple models to improve performance</p>
+        
+        <div class="algorithm-grid">
+            <!-- Random Forest -->
+            <div class="algorithm-card">
+                <div class="algorithm-header">
+                    <i class="algorithm-icon fas fa-tree"></i>
+                    <h3 class="algorithm-name">Random Forest</h3>
+                </div>
+                <p class="algorithm-desc">An ensemble learning method that constructs a multitude of decision trees at training time.</p>
+                
+                <div class="algorithm-details">
+                    <div class="detail-item">
+                        <span class="detail-label">Type:</span>
+                        <span class="detail-value">Classification, Regression</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Key Concepts:</span>
+                        <span class="detail-value">Bagging, feature randomness</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Use Cases:</span>
+                        <span class="detail-value">Feature importance, predictive modeling</span>
+                    </div>
+                </div>
+                
+                <div class="pros-cons">
+                    <div class="pros">
+                        <h4><i class="fas fa-plus-circle"></i> Pros</h4>
+                        <ul>
+                            <li>Reduces overfitting</li>
+                            <li>Handles missing values well</li>
+                            <li>Provides feature importance</li>
+                        </ul>
+                    </div>
+                    <div class="cons">
+                        <h4><i class="fas fa-minus-circle"></i> Cons</h4>
+                        <ul>
+                            <li>Computationally expensive</li>
+                            <li>Less interpretable than single trees</li>
+                            <li>Can be slow for real-time prediction</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="code-example">
+# Python code example<br>
+from sklearn.ensemble import RandomForestClassifier<br>
+model = RandomForestClassifier(n_estimators=100)<br>
+model.fit(X_train, y_train)<br>
+predictions = model.predict(X_test)
+                </div>
+            </div>
+            
+            <!-- Gradient Boosting -->
+            <div class="algorithm-card">
+                <div class="algorithm-header">
+                    <i class="algorithm-icon fas fa-chart-line"></i>
+                    <h3 class="algorithm-name">Gradient Boosting</h3>
+                </div>
+                <p class="algorithm-desc">An ensemble technique that builds models sequentially, with each new model correcting errors made by previous ones.</p>
+                
+                <div class="algorithm-details">
+                    <div class="detail-item">
+                        <span class="detail-label">Type:</span>
+                        <span class="detail-value">Classification, Regression</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Key Concepts:</span>
+                        <span class="detail-value">Boosting, loss function, weak learners</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Use Cases:</span>
+                        <span class="detail-value">Ranking, predictive modeling</span>
+                    </div>
+                </div>
+                
+                <div class="pros-cons">
+                    <div class="pros">
+                        <h4><i class="fas fa-plus-circle"></i> Pros</h4>
+                        <ul>
+                            <li>High predictive accuracy</li>
+                            <li>Handles mixed data types</li>
+                            <li>Supports custom loss functions</li>
+                        </ul>
+                    </div>
+                    <div class="cons">
+                        <h4><i class="fas fa-minus-circle"></i> Cons</h4>
+                        <ul>
+                            <li>Prone to overfitting</li>
+                            <li>Computationally expensive</li>
+                            <li>Requires careful tuning</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="code-example">
+# Python code example<br>
+from sklearn.ensemble import GradientBoostingClassifier<br>
+model = GradientBoostingClassifier()<br>
+model.fit(X_train, y_train)<br>
+predictions = model.predict(X_test)
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- NLP -->
+    <div class="category-container" id="nlp">
+        <h2><i class="fas fa-language"></i> Natural Language Processing</h2>
+        <p class="subtitle">Algorithms for processing and understanding human language</p>
+        
+        <div class="algorithm-grid">
+            <!-- Word2Vec -->
+            <div class="algorithm-card">
+                <div class="algorithm-header">
+                    <i class="algorithm-icon fas fa-font"></i>
+                    <h3 class="algorithm-name">Word2Vec</h3>
+                </div>
+                <p class="algorithm-desc">A technique for natural language processing that uses neural networks to learn word associations from large text corpus.</p>
+                
+                <div class="algorithm-details">
+                    <div class="detail-item">
+                        <span class="detail-label">Type:</span>
+                        <span class="detail-value">Word Embeddings</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Key Concepts:</span>
+                        <span class="detail-value">Skip-gram, CBOW, word vectors</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Use Cases:</span>
+                        <span class="detail-value">Semantic analysis, text classification</span>
+                    </div>
+                </div>
+                
+                <div class="pros-cons">
+                    <div class="pros">
+                        <h4><i class="fas fa-plus-circle"></i> Pros</h4>
+                        <ul>
+                            <li>Captures semantic relationships between words</li>
+                            <li>Works well with large datasets</li>
+                            <li>Creates dense vector representations</li>
+                        </ul>
+                    </div>
+                    <div class="cons">
+                        <h4><i class="fas fa-minus-circle"></i> Cons</h4>
+                        <ul>
+                            <li>Computationally intensive</li>
+                            <li>Requires large text corpus</li>
+                            <li>Cannot handle out-of-vocabulary words</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="code-example">
+# Python code example<br>
+from gensim.models import Word2Vec<br>
+model = Word2Vec(sentences, vector_size=100, window=5)<br>
+word_vectors = model.wv
+                </div>
+            </div>
+            
+            <!-- BERT -->
+            <div class="algorithm-card">
+                <div class="algorithm-header">
+                    <i class="algorithm-icon fas fa-language"></i>
+                    <h3 class="algorithm-name">BERT</h3>
+                </div>
+                <p class="algorithm-desc">Bidirectional Encoder Representations from Transformers - a transformer-based technique for NLP pre-training.</p>
+                
+                <div class="algorithm-details">
+                    <div class="detail-item">
+                        <span class="detail-label">Type:</span>
+                        <span class="detail-value">Language Model</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Key Concepts:</span>
+                        <span class="detail-value">Transformers, attention mechanism, bidirectional</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Use Cases:</span>
+                        <span class="detail-value">Question answering, sentiment analysis</span>
+                    </div>
+                </div>
+                
+                <div class="pros-cons">
+                    <div class="pros">
+                        <h4><i class="fas fa-plus-circle"></i> Pros</h4>
+                        <ul>
+                            <li>State-of-the-art performance on many NLP tasks</li>
+                            <li>Understands context bidirectionally</li>
+                            <li>Pre-trained models available for fine-tuning</li>
+                        </ul>
+                    </div>
+                    <div class="cons">
+                        <h4><i class="fas fa-minus-circle"></i> Cons</h4>
+                        <ul>
+                            <li>Extremely computationally intensive</li>
+                            <li>Requires massive amounts of data</li>
+                            <li>Large model size</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="code-example">
+# Python code example<br>
+from transformers import BertTokenizer, BertModel<br>
+tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')<br>
+model = BertModel.from_pretrained('bert-base-uncased')
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Deep Learning -->
+    <div class="category-container" id="dl">
+        <h2><i class="fas fa-network-wired"></i> Deep Learning</h2>
+        <p class="subtitle">Neural network-based algorithms for complex pattern recognition</p>
+        
+        <div class="algorithm-grid">
+            <!-- CNN -->
+            <div class="algorithm-card">
+                <div class="algorithm-header">
+                    <i class="algorithm-icon fas fa-image"></i>
+                    <h3 class="algorithm-name">Convolutional Neural Networks (CNN)</h3>
+                </div>
+                <p class="algorithm-desc">A class of deep neural networks most commonly applied to analyzing visual imagery.</p>
+                
+                <div class="algorithm-details">
+                    <div class="detail-item">
+                        <span class="detail-label">Type:</span>
+                        <span class="detail-value">Neural Network</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Key Concepts:</span>
+                        <span class="detail-value">Convolution, pooling, filters</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Use Cases:</span>
+                        <span class="detail-value">Image recognition, object detection</span>
+                    </div>
+                </div>
+                
+                <div class="pros-cons">
+                    <div class="pros">
+                        <h4><i class="fas fa-plus-circle"></i> Pros</h4>
+                        <ul>
+                            <li>Excellent for image data</li>
+                            <li>Automatic feature extraction</li>
+                            <li>Parameter sharing reduces complexity</li>
+                        </ul>
+                    </div>
+                    <div class="cons">
+                        <h4><i class="fas fa-minus-circle"></i> Cons</h4>
+                        <ul>
+                            <li>Computationally intensive</li>
+                            <li>Requires large amounts of data</li>
+                            <li>Black box nature makes interpretation difficult</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="code-example">
+# Python code example<br>
+from tensorflow.keras.models import Sequential<br>
+from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense<br>
+model = Sequential()<br>
+model.add(Conv2D(32, (3, 3), activation='relu', input_shape=(64, 64, 3)))
+                </div>
+            </div>
+            
+            <!-- RNN -->
+            <div class="algorithm-card">
+                <div class="algorithm-header">
+                    <i class="algorithm-icon fas fa-redo"></i>
+                    <h3 class="algorithm-name">Recurrent Neural Networks (RNN)</h3>
+                </div>
+                <p class="algorithm-desc">A class of neural networks where connections between nodes form a directed graph along a temporal sequence.</p>
+                
+                <div class="algorithm-details">
+                    <div class="detail-item">
+                        <span class="detail-label">Type:</span>
+                        <span class="detail-value">Neural Network</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Key Concepts:</span>
+                        <span class="detail-value">Time series, sequences, memory</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Use Cases:</span>
+                        <span class="detail-value">Time series prediction, speech recognition</span>
+                    </div>
+                </div>
+                
+                <div class="pros-cons">
+                    <div class="pros">
+                        <h4><i class="fas fa-plus-circle"></i> Pros</h4>
+                        <ul>
+                            <li>Excellent for sequential data</li>
+                            <li>Can handle variable length inputs</li>
+                            <li>Memory of previous inputs</li>
+                        </ul>
+                    </div>
+                    <div class="cons">
+                        <h4><i class="fas fa-minus-circle"></i> Cons</h4>
+                        <ul>
+                            <li>Vanishing/exploding gradient problem</li>
+                            <li>Computationally intensive</li>
+                            <li>Slow to train</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="code-example">
+# Python code example<br>
+from tensorflow.keras.models import Sequential<br>
+from tensorflow.keras.layers import SimpleRNN, Dense<br>
+model = Sequential()<br>
+model.add(SimpleRNN(50, activation='tanh', input_shape=(10, 1)))
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Created with <i class="fas fa-heart" style="color: #e74c3c;"></i> | Machine Learning Algorithms Cheat Sheet</p>
+        <p>Created by Atif Salam with <i class="fas fa-heart" style="color: #e74c3c;"></i> for the ML community</p>
+        <p><i class="fas fa-envelope"></i> : atif.salam@gmail.com, <i class="fas fa-mobile"></i> : +92 300 2328737</p>
+    </footer>
+
+    <script>
+        // Tab functionality
+        document.querySelectorAll('.tab-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                // Remove active class from all buttons and sections
+                document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.category-container').forEach(section => section.classList.remove('active'));
+                
+                // Add active class to clicked button
+                button.classList.add('active');
+                
+                // Show corresponding section
+                const category = button.getAttribute('data-category');
+                document.getElementById(category).classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

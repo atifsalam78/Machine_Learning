@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gradient Descent Cheat Sheet</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --info: #3498db;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 1.2rem;
+        }
+        
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+        
+        .tab-btn {
+            padding: 12px 20px;
+            background: #f1f3f5;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .tab-btn:hover {
+            background: #e1e5e9;
+        }
+        
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .guide-container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            padding: 25px;
+            margin-bottom: 30px;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .guide-container.active {
+            display: block;
+        }
+        
+        h2 {
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-top: 0;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            font-size: 1.5rem;
+        }
+        
+        h2 i {
+            margin-right: 10px;
+            font-size: 1.3rem;
+        }
+        
+        .guide-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
+        
+        .guide-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            border-left: 4px solid var(--secondary);
+        }
+        
+        .guide-section h3 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .guide-section h3 i {
+            color: var(--secondary);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        
+        th {
+            background: linear-gradient(90deg, var(--secondary) 0%, #5dade2 100%);
+            color: white;
+            font-weight: 600;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        
+        .math-formula {
+            background: #2d2d2d;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .code-example {
+            background: #2d2d2d;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .applications-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 15px;
+        }
+        
+        .application-card {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            border-top: 4px solid var(--info);
+        }
+        
+        .application-card h4 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .tips-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 15px;
+        }
+        
+        .professional-tips, .student-tips {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        }
+        
+        .professional-tips {
+            border-top: 4px solid var(--success);
+        }
+        
+        .student-tips {
+            border-top: 4px solid var(--warning);
+        }
+        
+        .professional-tips h4, .student-tips h4 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        ul {
+            padding-left: 20px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 15px;
+        }
+        
+        .comparison-card {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        }
+        
+        .comparison-card h4 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .comparison-card.pros {
+            border-top: 4px solid var(--success);
+        }
+        
+        .comparison-card.cons {
+            border-top: 4px solid var(--accent);
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            color: #777;
+            font-size: 0.9em;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @media (max-width: 768px) {
+            .applications-grid, .tips-container, .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .tabs {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .tab-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1><i class="fas fa-chart-line"></i> Gradient Descent: Comprehensive Cheat Sheet</h1>
+        <p class="subtitle">Everything you need to know about optimization with gradient descent</p>
+        
+        <div class="tabs">
+            <button class="tab-btn active" data-category="overview">
+                <i class="fas fa-info-circle"></i> Overview
+            </button>
+            <button class="tab-btn" data-category="variants">
+                <i class="fas fa-project-diagram"></i> Variants
+            </button>
+            <button class="tab-btn" data-category="implementation">
+                <i class="fas fa-code"></i> Implementation
+            </button>
+            <button class="tab-btn" data-category="challenges">
+                <i class="fas fa-exclamation-triangle"></i> Challenges
+            </button>
+        </div>
+    </header>
+
+    <!-- Overview Section -->
+    <div class="guide-container active" id="overview">
+        <h2><i class="fas fa-info-circle"></i> Gradient Descent Overview</h2>
+        
+        <div class="guide-content">
+            <div class="guide-section">
+                <h3><i class="fas fa-question-circle"></i> What Is Gradient Descent?</h3>
+                <p>Gradient descent is an <strong>optimization algorithm</strong> used to minimize a function by iteratively moving in the direction of steepest descent as defined by the negative of the gradient. In machine learning, it's used to update the parameters of a model to minimize a cost function.</p>
+            </div>
+            
+            <div class="guide-section">
+                <h3><i class="fas fa-bullseye"></i> Core Concept</h3>
+                <p>The algorithm works by calculating the gradient of the cost function with respect to each parameter and then updating the parameters in the opposite direction of the gradient. The size of each update is determined by the learning rate.</p>
+                
+                <div class="math-formula">
+                    // Parameter update rule<br>
+                    θ = θ - η * ∇J(θ)<br><br>
+                    
+                    Where:<br>
+                    θ = parameters<br>
+                    η = learning rate<br>
+                    ∇J(θ) = gradient of cost function J with respect to θ
+                </div>
+            </div>
+            
+            <div class="guide-section">
+                <h3><i class="fas fa-calculator"></i> Mathematical Formulation</h3>
+                
+                <h4>Gradient Calculation</h4>
+                <div class="math-formula">
+                    ∇J(θ) = [∂J/∂θ₁, ∂J/∂θ₂, ..., ∂J/∂θₙ]
+                </div>
+                
+                <h4>Update Rule for Linear Regression</h4>
+                <div class="math-formula">
+                    // For each parameter θⱼ<br>
+                    θⱼ = θⱼ - η * (1/m) * Σ(hθ(x⁽ⁱ⁾) - y⁽ⁱ⁾) * xⱼ⁽ⁱ⁾
+                </div>
+                
+                <h4>Update Rule for Logistic Regression</h4>
+                <div class="math-formula">
+                    // For each parameter θⱼ<br>
+                    θⱼ = θⱼ - η * (1/m) * Σ(hθ(x⁽ⁱ⁾) - y⁽ⁱ⁾) * xⱼ⁽ⁱ⁾
+                </div>
+            </div>
+            
+            <div class="guide-section">
+                <h3><i class="fas fa-tachometer-alt"></i> Learning Rate (η)</h3>
+                <p>The learning rate is a hyperparameter that controls how much we adjust the parameters with respect to the gradient. Choosing an appropriate learning rate is crucial:</p>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Learning Rate</th>
+                            <th>Effect</th>
+                            <th>Result</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Too small</strong></td>
+                            <td>Slow convergence</td>
+                            <td>Training takes too long</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Appropriate</strong></td>
+                            <td>Steady convergence</td>
+                            <td>Efficient training</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Too large</strong></td>
+                            <td>Overshooting</td>
+                            <td>Divergence or oscillation</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="guide-section">
+                <h3><i class="fas fa-sync-alt"></i> Convergence Criteria</h3>
+                <p>Gradient descent typically stops when one of the following conditions is met:</p>
+                
+                <ul>
+                    <li>The change in cost function falls below a predefined threshold</li>
+                    <li>The gradient magnitude falls below a predefined threshold</li>
+                    <li>A maximum number of iterations is reached</li>
+                    <li>Early stopping based on validation performance</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Variants Section -->
+    <div class="guide-container" id="variants">
+        <h2><i class="fas fa-project-diagram"></i> Gradient Descent Variants</h2>
+        
+        <div class="guide-content">
+            <div class="guide-section">
+                <h3><i class="fas fa-database"></i> Batch Gradient Descent</h3>
+                <p>Computes the gradient using the entire training dataset for each update.</p>
+                
+                <div class="math-formula">
+                    θ = θ - η * ∇J(θ)  // For all training examples
+                </div>
+                
+                <div class="comparison-grid">
+                    <div class="comparison-card pros">
+                        <h4><i class="fas fa-plus-circle"></i> Advantages</h4>
+                        <ul>
+                            <li>Stable convergence</li>
+                            <li>Deterministic progress</li>
+                            <li>Straightforward implementation</li>
+                        </ul>
+                    </div>
+                    <div class="comparison-card cons">
+                        <h4><i class="fas fa-minus-circle"></i> Disadvantages</h4>
+                        <ul>
+                            <li>Slow for large datasets</li>
+                            <li>Memory intensive</li>
+                            <li>Gets stuck in local minima</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="guide-section">
+                <h3><i class="fas fa-random"></i> Stochastic Gradient Descent (SGD)</h3>
+                <p>Computes the gradient using a single training example for each update.</p>
+                
+                <div class="math-formula">
+                    θ = θ - η * ∇J(θ; x⁽ⁱ⁾, y⁽ⁱ⁾)  // For one training example
+                </div>
+                
+                <div class="comparison-grid">
+                    <div class="comparison-card pros">
+                        <h4><i class="fas fa-plus-circle"></i> Advantages</h4>
+                        <ul>
+                            <li>Faster updates</li>
+                            <li>Escapes local minima</li>
+                            <li>Works with online learning</li>
+                        </ul>
+                    </div>
+                    <div class="comparison-card cons">
+                        <h4><i class="fas fa-minus-circle"></i> Disadvantages</h4>
+                        <ul>
+                            <li>Noisy updates</li>
+                            <li>May not converge to minimum</li>
+                            <li>Oscillates around optimum</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="guide-section">
+                <h3><i class="fas fa-layer-group"></i> Mini-Batch Gradient Descent</h3>
+                <p>Computes the gradient using a small subset (mini-batch) of the training data for each update. This is the most common approach in practice.</p>
+                
+                <div class="math-formula">
+                    θ = θ - η * ∇J(θ; x⁽ⁱ⁾:⁽ⁱ⁺ⁿ⁾, y⁽ⁱ⁾:⁽ⁱ⁺ⁿ⁾)  // For a mini-batch of n examples
+                </div>
+                
+                <div class="comparison-grid">
+                    <div class="comparison-card pros">
+                        <h4><i class="fas fa-plus-circle"></i> Advantages</h4>
+                        <ul>
+                            <li>Balance between speed and stability</li>
+                            <li>Efficient computation (parallelization)</li>
+                            <li>Regularization effect</li>
+                        </ul>
+                    </div>
+                    <div class="comparison-card cons">
+                        <h4><i class="fas fa-minus-circle"></i> Disadvantages</h4>
+                        <ul>
+                            <li>Requires tuning batch size</li>
+                            <li>Still may oscillate</li>
+                            <li>More complex implementation</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="guide-section">
+                <h3><i class="fas fa-rocket"></i> Advanced Variants</h3>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Variant</th>
+                            <th>Description</th>
+                            <th>Key Feature</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Momentum</strong></td>
+                            <td>Accumulates velocity in direction of consistent gradient</td>
+                            <td>Reduces oscillation, faster convergence</td>
+                        </tr>
+                        <tr>
+                            <td><strong>AdaGrad</strong></td>
+                            <td>Adapts learning rate for each parameter</td>
+                            <td>Larger updates for infrequent parameters</td>
+                        </tr>
+                        <tr>
+                            <td><strong>RMSProp</strong></td>
+                            <td>Improves upon AdaGrad with exponential decay</td>
+                            <td>Prevents radically diminishing learning rates</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Adam</strong></td>
+                            <td>Combines Momentum and RMSProp ideas</td>
+                            <td>Adaptive moment estimation, most popular</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Implementation Section -->
+    <div class="guide-container" id="implementation">
+        <h2><i class="fas fa-code"></i> Implementation Guide</h2>
+        
+        <div class="guide-content">
+            <div class="guide-section">
+                <h3><i class="fas fa-cogs"></i> Basic Implementation</h3>
+                
+                <h4>Python Implementation of Batch Gradient Descent</h4>
+                <div class="code-example">
+import numpy as np<br>
+<br>
+def batch_gradient_descent(X, y, learning_rate=0.01, n_iters=1000):<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;m, n = X.shape<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;theta = np.zeros(n)<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;cost_history = np.zeros(n_iters)<br>
+    <br>
+    &nbsp;&nbsp;&nbsp;&nbsp;for i in range(n_iters):<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Calculate prediction<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y_pred = np.dot(X, theta)<br>
+    <br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Calculate gradient<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;gradient = (1/m) * np.dot(X.T, (y_pred - y))<br>
+    <br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Update parameters<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;theta = theta - learning_rate * gradient<br>
+    <br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Calculate cost<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cost = (1/(2*m)) * np.sum(np.square(y_pred - y))<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cost_history[i] = cost<br>
+    <br>
+    &nbsp;&nbsp;&nbsp;&nbsp;return theta, cost_history
+                </div>
+            </div>
+            
+            <div class="guide-section">
+                <h3><i class="fas fa-cogs"></i> Advanced Implementation</h3>
+                
+                <h4>Python Implementation of Mini-Batch Gradient Descent</h4>
+                <div class="code-example">
+def mini_batch_gradient_descent(X, y, learning_rate=0.01, batch_size=32, n_epochs=100):<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;m, n = X.shape<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;theta = np.zeros(n)<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;cost_history = []<br>
+    <br>
+    &nbsp;&nbsp;&nbsp;&nbsp;n_batches = int(m / batch_size)<br>
+    <br>
+    &nbsp;&nbsp;&nbsp;&nbsp;for epoch in range(n_epochs):<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;indices = np.random.permutation(m)<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;X_shuffled = X[indices]<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y_shuffled = y[indices]<br>
+    <br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for i in range(0, m, batch_size):<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;X_batch = X_shuffled[i:i+batch_size]<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y_batch = y_shuffled[i:i+batch_size]<br>
+    <br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Calculate prediction<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y_pred = np.dot(X_batch, theta)<br>
+    <br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Calculate gradient<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;gradient = (1/batch_size) * np.dot(X_batch.T, (y_pred - y_batch))<br>
+    <br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Update parameters<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;theta = theta - learning_rate * gradient<br>
+    <br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Calculate cost for entire dataset<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y_pred_full = np.dot(X, theta)<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cost = (1/(2*m)) * np.sum(np.square(y_pred_full - y))<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cost_history.append(cost)<br>
+    <br>
+    &nbsp;&nbsp;&nbsp;&nbsp;return theta, cost_history
+                </div>
+            </div>
+            
+            <div class="guide-section">
+                <h3><i class="fas fa-tools"></i> Using Frameworks</h3>
+                
+                <h4>TensorFlow/Keras Implementation</h4>
+                <div class="code-example">
+from tensorflow.keras.models import Sequential<br>
+from tensorflow.keras.layers import Dense<br>
+from tensorflow.keras.optimizers import SGD, Adam<br>
+<br>
+# Create model<br>
+model = Sequential([<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;Dense(10, activation='relu', input_shape=(X.shape[1],)),<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;Dense(1)  # Output layer<br>
+])<br>
+<br>
+# Choose optimizer<br>
+optimizer = SGD(learning_rate=0.01, momentum=0.9)<br>
+# or<br>
+optimizer = Adam(learning_rate=0.001)<br>
+<br>
+# Compile model<br>
+model.compile(optimizer=optimizer, loss='mse')<br>
+<br>
+# Train model<br>
+history = model.fit(X_train, y_train, epochs=100, batch_size=32, validation_split=0.2)
+                </div>
+                
+                <h4>PyTorch Implementation</h4>
+                <div class="code-example">
+import torch<br>
+import torch.nn as nn<br>
+import torch.optim as optim<br>
+<br>
+# Define model<br>
+model = nn.Sequential(<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;nn.Linear(X.shape[1], 10),<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;nn.ReLU(),<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;nn.Linear(10, 1)<br>
+)<br>
+<br>
+# Define loss and optimizer<br>
+criterion = nn.MSELoss()<br>
+optimizer = optim.SGD(model.parameters(), lr=0.01)<br>
+# or<br>
+optimizer = optim.Adam(model.parameters(), lr=0.001)<br>
+<br>
+# Training loop<br>
+for epoch in range(100):<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;# Forward pass<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;outputs = model(X_tensor)<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;loss = criterion(outputs, y_tensor)<br>
+    <br>
+    &nbsp;&nbsp;&nbsp;&nbsp;# Backward pass and optimize<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;optimizer.zero_grad()<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;loss.backward()<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;optimizer.step()
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Challenges Section -->
+    <div class="guide-container" id="challenges">
+        <h2><i class="fas fa-exclamation-triangle"></i> Challenges & Solutions</h2>
+        
+        <div class="guide-content">
+            <div class="guide-section">
+                <h3><i class="fas fa-exclamation-circle"></i> Common Challenges</h3>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Challenge</th>
+                            <th>Description</th>
+                            <th>Symptoms</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Vanishing Gradients</strong></td>
+                            <td>Gradients become extremely small</td>
+                            <td>Slow learning, parameters stop updating</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Exploding Gradients</strong></td>
+                            <td>Gradients become extremely large</td>
+                            <td>NaN values, unstable training</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Local Minima</strong></td>
+                            <td>Algorithm converges to suboptimal solution</td>
+                            <td>Poor performance despite training</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Saddle Points</strong></td>
+                            <td>Point where some gradients are zero but not a minimum</td>
+                            <td>Training stalls</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Learning Rate Selection</strong></td>
+                            <td>Choosing appropriate learning rate</td>
+                            <td>Slow convergence or divergence</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="guide-section">
+                <h3><i class="fas fa-wrench"></i> Solutions & Best Practices</h3>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Solution</th>
+                            <th>Description</th>
+                            <th>When to Use</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Learning Rate Scheduling</strong></td>
+                            <td>Gradually reduce learning rate during training</td>
+                            <td>When convergence slows in later stages</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Gradient Clipping</strong></td>
+                            <td>Limit gradient values to prevent explosion</td>
+                            <td>When dealing with exploding gradients</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Momentum</strong></td>
+                            <td>Accumulate past gradients to navigate flat regions</td>
+                            <td>When progress stalls in flat regions</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Advanced Optimizers</strong></td>
+                            <td>Use Adam, RMSProp, etc. with adaptive learning rates</td>
+                            <td>For most deep learning applications</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Batch Normalization</strong></td>
+                            <td>Normalize layer inputs to reduce internal covariate shift</td>
+                            <td>In deep networks to improve stability</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Gradient Checking</strong></td>
+                            <td>Compare analytical and numerical gradients</td>
+                            <td>When implementing custom gradients</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="guide-section">
+                <h3><i class="fas fa-search"></i> Debugging Gradient Descent</h3>
+                
+                <h4>Common Debugging Techniques</h4>
+                <ul>
+                    <li><strong>Plot cost function over time</strong> - Should decrease steadily</li>
+                    <li><strong>Monitor gradient magnitudes</strong> - Should not be extremely small or large</li>
+                    <li><strong>Try different learning rates</strong> - Use learning rate finder techniques</li>
+                    <li><strong>Check implementation with small dataset</strong> - Should overfit quickly</li>
+                    <li><strong>Use gradient checking</strong> - Verify gradient calculations</li>
+                </ul>
+                
+                <h4>Learning Rate Finder</h4>
+                <div class="code-example">
+def find_learning_rate(model, X, y, min_lr=1e-6, max_lr=1, steps=100):<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;lr_mult = (max_lr / min_lr) ** (1/steps)<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;learning_rates = []<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;losses = []<br>
+    <br>
+    &nbsp;&nbsp;&nbsp;&nbsp;for step in range(steps):<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lr = min_lr * (lr_mult ** step)<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;learning_rates.append(lr)<br>
+    <br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Update model with current learning rate<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# (implementation depends on framework)<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;loss = update_model_with_lr(model, X, y, lr)<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;losses.append(loss)<br>
+    <br>
+    &nbsp;&nbsp;&nbsp;&nbsp;return learning_rates, losses
+                </div>
+            </div>
+            
+            <div class="guide-section">
+                <h3><i class="fas fa-lightbulb"></i> Practical Tips</h3>
+                
+                <div class="tips-container">
+                    <div class="professional-tips">
+                        <h4><i class="fas fa-user-tie"></i> For Professionals</h4>
+                        <ul>
+                            <li>Use <strong>learning rate scheduling</strong> for better convergence</li>
+                            <li>Implement <strong>early stopping</strong> to prevent overfitting</li>
+                            <li>Monitor <strong>gradient norms</strong> for stability</li>
+                            <li>Use <strong>Adam</strong> as a default optimizer for most cases</li>
+                            <li>Consider <strong>second-order methods</strong> for small datasets</li>
+                        </ul>
+                    </div>
+                    <div class="student-tips">
+                        <h4><i class="fas fa-user-graduate"></i> For Students</h4>
+                        <ul>
+                            <li>Start with <strong>simple implementations</strong> to understand the basics</li>
+                            <li>Visualize <strong>cost function landscapes</strong> for intuition</li>
+                            <li>Experiment with <strong>different learning rates</strong></li>
+                            <li>Implement <strong>multiple variants</strong> to compare performance</li>
+                            <li>Use <strong>debugging techniques</strong> when implementations fail</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Created with <i class="fas fa-heart" style="color: #e74c3c;"></i> | Gradient Descent Comprehensive Cheat Sheet</p>
+        <p>Created by Atif Salam with <i class="fas fa-heart" style="color: #e74c3c;"></i> for the ML community</p>
+        <p><i class="fas fa-envelope"></i> : atif.salam@gmail.com, <i class="fas fa-mobile"></i> : +92 300 2328737</p>
+    </footer>
+
+    <script>
+        // Tab functionality
+        document.querySelectorAll('.tab-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                // Remove active class from all buttons and sections
+                document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.guide-container').forEach(section => section.classList.remove('active'));
+                
+                // Add active class to clicked button
+                button.classList.add('active');
+                
+                // Show corresponding section
+                const category = button.getAttribute('data-category');
+                document.getElementById(category).classList.add('active');
+            });
+        });
+
+        // MathJax configuration
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']]
+            }
+        };
+    </script>
+</body>
+</html>
