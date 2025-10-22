@@ -634,11 +634,468 @@ print(classification_report(y_test, y_pred))
     </div>
 
     <!-- Additional algorithm guides would go here -->
+    <!-- Decision Trees Guide -->
     <div class="guide-container" id="decision-trees">
         <h2><i class="fas fa-sitemap"></i> Decision Trees Reference Guide</h2>
-        <p class="subtitle">Content for Decision Trees guide would go here...</p>
+        
+        <div class="guide-content">
+            <div class="guide-section">
+                <h3><i class="fas fa-question-circle"></i> What Are Decision Trees?</h3>
+                
+                <div class="definition-box">
+                    <h4><i class="fas fa-book"></i> Definition</h4>
+                    <p>Decision Trees are <strong>supervised learning algorithms</strong> used for both classification and regression tasks. They create a model that predicts the value of a target variable by learning simple decision rules inferred from the data features. The structure resembles a tree with nodes representing decisions and leaves representing outcomes.</p>
+                </div>
+                
+                <p>Decision trees work by recursively splitting the data into subsets based on the most significant features, creating a tree-like structure where each internal node represents a feature test, each branch represents the outcome of the test, and each leaf node represents a class label or continuous value.</p>
+            </div>
+            
+            <div class="guide-section">
+                <h3><i class="fas fa-check-circle"></i> When to Use Decision Trees</h3>
+                <p>Use Decision Trees when:</p>
+                <ul>
+                    <li>You need an <strong>interpretable model</strong> that stakeholders can understand</li>
+                    <li>Your data contains both <strong>numerical and categorical features</strong></li>
+                    <li>You want to understand <strong>feature importance</strong></li>
+                    <li>You're dealing with <strong>non-linear relationships</strong></li>
+                    <li>You need a <strong>quick baseline model</strong></li>
+                </ul>
+            </div>
+            
+            <div class="guide-section">
+                <h3><i class="fas fa-project-diagram"></i> Key Components</h3>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Component</th>
+                            <th>Description</th>
+                            <th>Role</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Root Node</strong></td>
+                            <td>The topmost node that represents the entire dataset</td>
+                            <td>Starting point for decision making</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Internal Nodes</strong></td>
+                            <td>Nodes that represent feature tests</td>
+                            <td>Split data based on feature values</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Branches</strong></td>
+                            <td>Connections between nodes</td>
+                            <td>Represent outcomes of decisions</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Leaf Nodes</strong></td>
+                            <td>Terminal nodes that represent final decisions</td>
+                            <td>Contain prediction outcomes</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Splitting</strong></td>
+                            <td>Process of dividing nodes</td>
+                            <td>Creates homogeneous subsets</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Pruning</strong></td>
+                            <td>Removing unnecessary branches</td>
+                            <td>Reduces overfitting</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="guide-section">
+                <h3><i class="fas fa-calculator"></i> Splitting Criteria</h3>
+                
+                <h4>Classification Trees</h4>
+                <div class="math-formula">
+                    // Gini Impurity<br>
+                    Gini = 1 - Σ(p_i)²<br><br>
+                    
+                    // Information Gain (Entropy)<br>
+                    Entropy = -Σ(p_i * log₂(p_i))<br>
+                    Information Gain = Entropy(parent) - Σ(weight * Entropy(child))
+                </div>
+                
+                <h4>Regression Trees</h4>
+                <div class="math-formula">
+                    // Variance Reduction<br>
+                    Variance = Σ(y_i - μ)² / n<br>
+                    Reduction = Variance(parent) - Σ(weight * Variance(child))
+                </div>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Criterion</th>
+                            <th>Type</th>
+                            <th>When to Use</th>
+                            <th>Characteristics</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Gini Impurity</strong></td>
+                            <td>Classification</td>
+                            <td>Default for most implementations</td>
+                            <td>Faster computation, similar results to entropy</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Information Gain</strong></td>
+                            <td>Classification</td>
+                            <td>When you prefer information theory approach</td>
+                            <td>More balanced splits, slightly slower</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Variance Reduction</strong></td>
+                            <td>Regression</td>
+                            <td>For continuous target variables</td>
+                            <td>Minimizes squared errors</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="guide-section">
+                <h3><i class="fas fa-code-branch"></i> Tree Building Process</h3>
+                
+                <ol>
+                    <li><strong>Start with Root Node:</strong> Begin with the entire dataset</li>
+                    <li><strong>Find Best Split:</strong> For each feature, find the best split point</li>
+                    <li><strong>Split Data:</strong> Divide data into subsets based on the best split</li>
+                    <li><strong>Recurse:</strong> Repeat process for each subset until stopping criteria met</li>
+                    <li><strong>Create Leaf Nodes:</strong> Assign predictions to terminal nodes</li>
+                </ol>
+                
+                <div class="definition-box">
+                    <h4><i class="fas fa-exclamation-triangle"></i> Stopping Criteria</h4>
+                    <ul>
+                        <li>Maximum tree depth reached</li>
+                        <li>Minimum samples per leaf achieved</li>
+                        <li>Minimum samples for split satisfied</li>
+                        <li>No improvement in impurity</li>
+                        <li>All features are constant</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="guide-section">
+                <h3><i class="fas fa-code"></i> Python Implementation</h3>
+                
+                <h4>Basic Decision Tree Classifier</h4>
+                <div class="code-example">
+from sklearn.tree import DecisionTreeClassifier<br>
+from sklearn.model_selection import train_test_split<br>
+from sklearn.metrics import accuracy_score, classification_report<br>
+from sklearn import tree<br>
+import matplotlib.pyplot as plt<br><br>
+
+# Load and prepare data<br>
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)<br><br>
+
+# Create and train model<br>
+dt_classifier = DecisionTreeClassifier(<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;criterion='gini',<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;max_depth=5,<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;min_samples_split=10,<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;min_samples_leaf=5,<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;random_state=42<br>
+)<br><br>
+
+dt_classifier.fit(X_train, y_train)<br><br>
+
+# Make predictions<br>
+y_pred = dt_classifier.predict(X_test)<br>
+print("Accuracy:", accuracy_score(y_test, y_pred))<br>
+print(classification_report(y_test, y_pred))<br><br>
+
+# Visualize the tree<br>
+plt.figure(figsize=(12, 8))<br>
+tree.plot_tree(dt_classifier, feature_names=feature_names, class_names=class_names, filled=True)<br>
+plt.show()
+                </div>
+                
+                <h4>Decision Tree Regressor</h4>
+                <div class="code-example">
+from sklearn.tree import DecisionTreeRegressor<br>
+from sklearn.metrics import mean_squared_error, r2_score<br><br>
+
+# Create and train regression tree<br>
+dt_regressor = DecisionTreeRegressor(<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;criterion='squared_error',<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;max_depth=4,<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;min_samples_split=20,<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;random_state=42<br>
+)<br><br>
+
+dt_regressor.fit(X_train, y_train)<br><br>
+
+# Make predictions and evaluate<br>
+y_pred = dt_regressor.predict(X_test)<br>
+print("MSE:", mean_squared_error(y_test, y_pred))<br>
+print("R² Score:", r2_score(y_test, y_pred))
+                </div>
+            </div>
+            
+            <div class="guide-section">
+                <h3><i class="fas fa-tachometer-alt"></i> Hyperparameter Tuning</h3>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Description</th>
+                            <th>Effect</th>
+                            <th>Typical Values</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>max_depth</strong></td>
+                            <td>Maximum depth of the tree</td>
+                            <td>Controls overfitting</td>
+                            <td>3-10 (None for unlimited)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>min_samples_split</strong></td>
+                            <td>Minimum samples required to split a node</td>
+                            <td>Prevents overfitting on small subsets</td>
+                            <td>2-20</td>
+                        </tr>
+                        <tr>
+                            <td><strong>min_samples_leaf</strong></td>
+                            <td>Minimum samples required at a leaf node</td>
+                            <td>Smooths predictions</td>
+                            <td>1-10</td>
+                        </tr>
+                        <tr>
+                            <td><strong>max_features</strong></td>
+                            <td>Number of features to consider for best split</td>
+                            <td>Adds randomness, reduces variance</td>
+                            <td>'sqrt', 'log2', or integer</td>
+                        </tr>
+                        <tr>
+                            <td><strong>min_impurity_decrease</strong></td>
+                            <td>Minimum impurity decrease required for split</td>
+                            <td>Controls split quality</td>
+                            <td>0.0-0.1</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="code-example">
+from sklearn.model_selection import GridSearchCV<br><br>
+
+# Define parameter grid<br>
+param_grid = {<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;'max_depth': [3, 5, 7, 10, None],<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;'min_samples_split': [2, 5, 10],<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;'min_samples_leaf': [1, 2, 4],<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;'criterion': ['gini', 'entropy']<br>
+}<br><br>
+
+# Perform grid search<br>
+grid_search = GridSearchCV(<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;DecisionTreeClassifier(random_state=42),<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;param_grid,<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;cv=5,<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;scoring='accuracy'<br>
+)<br><br>
+
+grid_search.fit(X_train, y_train)<br>
+print("Best parameters:", grid_search.best_params_)<br>
+print("Best cross-validation score:", grid_search.best_score_)
+                </div>
+            </div>
+            
+            <div class="guide-section">
+                <h3><i class="fas fa-sitemap"></i> Advanced Decision Tree Variants</h3>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Variant</th>
+                            <th>Description</th>
+                            <th>Advantages</th>
+                            <th>Use Cases</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>CART</strong></td>
+                            <td>Classification and Regression Trees</td>
+                            <td>Handles both classification and regression</td>
+                            <td>General purpose problems</td>
+                        </tr>
+                        <tr>
+                            <td><strong>ID3</strong></td>
+                            <td>Iterative Dichotomiser 3</td>
+                            <td>Uses information gain, simple implementation</td>
+                            <td>Educational purposes, small datasets</td>
+                        </tr>
+                        <tr>
+                            <td><strong>C4.5/C5.0</strong></td>
+                            <td>Improved version of ID3</td>
+                            <td>Handles missing values, continuous features</td>
+                            <td>Commercial applications</td>
+                        </tr>
+                        <tr>
+                            <td><strong>CHAID</strong></td>
+                            <td>Chi-squared Automatic Interaction Detection</td>
+                            <td>Uses chi-square tests, handles categorical data well</td>
+                            <td>Marketing research, survey analysis</td>
+                        </tr>
+                        <tr>
+                            <td><strong>MARS</strong></td>
+                            <td>Multivariate Adaptive Regression Splines</td>
+                            <td>Handles complex non-linear relationships</td>
+                            <td>Complex regression problems</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="guide-section">
+                <h3><i class="fas fa-globe"></i> Real-World Applications</h3>
+                
+                <div class="applications-grid">
+                    <div class="application-card">
+                        <h4><i class="fas fa-stethoscope"></i> Medical Diagnosis</h4>
+                        <p>Classifying diseases based on symptoms and test results. Decision trees help doctors understand the reasoning behind diagnoses.</p>
+                    </div>
+                    <div class="application-card">
+                        <h4><i class="fas fa-credit-card"></i> Credit Scoring</h4>
+                        <p>Assessing loan applications by evaluating income, credit history, employment status, and other factors.</p>
+                    </div>
+                    <div class="application-card">
+                        <h4><i class="fas fa-shopping-cart"></i> Customer Segmentation</h4>
+                        <p>Identifying customer groups based on purchasing behavior, demographics, and preferences for targeted marketing.</p>
+                    </div>
+                    <div class="application-card">
+                        <h4><i class="fas fa-industry"></i> Quality Control</h4>
+                        <p>Predicting manufacturing defects based on process parameters and material properties.</p>
+                    </div>
+                    <div class="application-card">
+                        <h4><i class="fas fa-robot"></i> Fraud Detection</h4>
+                        <p>Identifying suspicious transactions by analyzing patterns in transaction data and user behavior.</p>
+                    </div>
+                    <div class="application-card">
+                        <h4><i class="fas fa-chart-line"></i> Financial Analysis</h4>
+                        <p>Predicting stock prices or market trends based on technical indicators and economic factors.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="guide-section">
+                <h3><i class="fas fa-balance-scale"></i> Pros and Cons</h3>
+                
+                <div class="comparison-grid">
+                    <div class="comparison-card pros">
+                        <h4><i class="fas fa-plus-circle"></i> Advantages</h4>
+                        <ul>
+                            <li><strong>Easy to interpret and visualize</strong></li>
+                            <li>Handles both numerical and categorical data</li>
+                            <li>Requires little data preprocessing</li>
+                            <li>Can model non-linear relationships</li>
+                            <li>White box model - decisions are transparent</li>
+                            <li>Robust to outliers</li>
+                            <li>Performs feature selection automatically</li>
+                        </ul>
+                    </div>
+                    <div class="comparison-card cons">
+                        <h4><i class="fas fa-minus-circle"></i> Disadvantages</h4>
+                        <ul>
+                            <li><strong>Prone to overfitting</strong> without proper constraints</li>
+                            <li>Can create biased trees if some classes dominate</li>
+                            <li>Small changes in data can lead to different trees</li>
+                            <li>Not suitable for complex relationships requiring many splits</li>
+                            <li>Struggles with XOR and similar problems</li>
+                            <li>Can have high variance</li>
+                            <li>Not the most accurate algorithm for many problems</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="guide-section">
+                <h3><i class="fas fa-lightbulb"></i> Strategic Tips</h3>
+                
+                <div class="tips-container">
+                    <div class="professional-tips">
+                        <h4><i class="fas fa-user-tie"></i> For Professionals</h4>
+                        <ul>
+                            <li>Use <strong>pruning techniques</strong> to control tree complexity</li>
+                            <li>Combine with <strong>ensemble methods</strong> (Random Forest, Gradient Boosting) for better performance</li>
+                            <li>Use <strong>feature importance</strong> scores for feature selection in other models</li>
+                            <li>Implement <strong>cost-complexity pruning</strong> for optimal tree size</li>
+                            <li>Consider <strong>business constraints</strong> when setting depth limits</li>
+                            <li>Use <strong>cross-validation</strong> for reliable hyperparameter tuning</li>
+                            <li>Monitor <strong>tree stability</strong> across different data samples</li>
+                        </ul>
+                    </div>
+                    <div class="student-tips">
+                        <h4><i class="fas fa-user-graduate"></i> For Students</h4>
+                        <ul>
+                            <li>Start with <strong>small datasets</strong> to visualize the tree structure</li>
+                            <li>Practice calculating <strong>Gini impurity and information gain</strong> manually</li>
+                            <li>Experiment with different <strong>stopping criteria</strong></li>
+                            <li>Compare <strong>pre-pruning vs post-pruning</strong> techniques</li>
+                            <li>Understand the <strong>bias-variance tradeoff</strong> in tree depth</li>
+                            <li>Learn to interpret <strong>feature importance</strong> scores</li>
+                            <li>Practice <strong>visualizing trees</strong> for better understanding</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="guide-section">
+                <h3><i class="fas fa-exclamation-triangle"></i> Common Pitfalls & Solutions</h3>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Pitfall</th>
+                            <th>Problem</th>
+                            <th>Solution</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Overfitting</strong></td>
+                            <td>Tree captures noise in training data</td>
+                            <td>Use pruning, set depth limits, increase min_samples</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Underfitting</strong></td>
+                            <td>Tree is too simple to capture patterns</td>
+                            <td>Increase max_depth, reduce min_samples</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Unstable Trees</strong></td>
+                            <td>Small data changes cause different trees</td>
+                            <td>Use ensemble methods, increase min_samples</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Class Imbalance</strong></td>
+                            <td>Majority class dominates splits</td>
+                            <td>Use class weights, balance dataset</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Feature Bias</strong></td>
+                            <td>Continuous features preferred over categorical</td>
+                            <td>Use appropriate splitting criteria, feature engineering</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
+    <!-- Additional sections would go here -->
     <div class="guide-container" id="svm">
         <h2><i class="fas fa-expand-arrows-alt"></i> SVM Reference Guide</h2>
         <p class="subtitle">Content for SVM guide would go here...</p>
@@ -648,6 +1105,51 @@ print(classification_report(y_test, y_pred))
         <h2><i class="fas fa-object-group"></i> Clustering Reference Guide</h2>
         <p class="subtitle">Content for Clustering guide would go here...</p>
     </div>
+
+    <!-- <footer>
+        <p>Created with <i class="fas fa-heart" style="color: #e74c3c;"></i> | Machine Learning Algorithms Reference Guide</p>
+    </footer> -->
+
+    <script>
+        // Tab functionality
+        document.querySelectorAll('.tab-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                // Remove active class from all buttons and sections
+                document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.guide-container').forEach(section => section.classList.remove('active'));
+                
+                // Add active class to clicked button
+                button.classList.add('active');
+                
+                // Show corresponding section
+                const category = button.getAttribute('data-category');
+                document.getElementById(category).classList.add('active');
+            });
+        });
+
+        // MathJax configuration
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']]
+            }
+        };
+    </script>
+
+
+
+    <div class="guide-container" id="svm">
+        <h2><i class="fas fa-expand-arrows-alt"></i> SVM Reference Guide</h2>
+        <p class="subtitle">Content for SVM guide would go here...</p>
+    </div>
+
+
+
+    <div class="guide-container" id="clustering">
+        <h2><i class="fas fa-object-group"></i> Clustering Reference Guide</h2>
+        <p class="subtitle">Content for Clustering guide would go here...</p>
+    </div>
+
+    
 
     <footer>
         <p>Created with <i class="fas fa-heart" style="color: #e74c3c;"></i> | Machine Learning Algorithms Reference Guide</p>
@@ -679,5 +1181,6 @@ print(classification_report(y_test, y_pred))
             }
         };
     </script>
+
 </body>
 </html>
